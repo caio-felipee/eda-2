@@ -1,82 +1,85 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define Item pair
-#define less(A, B) A.amount < B.amount
+const int MAX = 101010;
 
-typedef struct pair {
-    int amount;
-    int started;
-    char letter;
-} pair;
+#define key(A) A.amount
+#define less(A, B) key(A) < key(B)
 
-int min(int x, int y) { return (x<y)? x :y; }
-
-void merge(Item *V, int l, int m, int r)
+typedef struct Item
 {
-  Item *R=malloc(sizeof(Item)*(r-l+1));
-  int i=l,j=m+1,k=0;
+    char ch;
+    int amount;
+    int start;
+} Item;
 
-  while(i<=m && j<=r)
-  {
-    if(less(V[i],V[j]))
-      R[k++]=V[i++];
-    else
-      R[k++]=V[j++];
-  }
+void merge(Item *vs, int l, int mid, int r)
+{
+    Item *v = malloc(sizeof(Item)*(r - l + 1));
+    int i = l, j = mid + 1, k = 0;
 
-  while(i<=m)
-      R[k++]=V[i++];
-  while(j<=r)
-      R[k++]=V[j++];
-
-
-  k=0;
-  for(i=l;i<=r;i++)
-    V[i]=R[k++];
-  free(R);
-}
-
-void mergesort(Item *arr, int n) {
-    for(int curr_size = 1; curr_size < n; curr_size *= 2) {
-        for(int left_start = 0; left_start < n - 1; left_start += 2*curr_size) {
-            int mid = min(left_start + curr_size - 1, n - 1);
-            int right_end = min(left_start + 2 * curr_size - 1, n - 1);
-            
-            merge(arr, left_start, mid, right_end);
-        }
+    while(i <= mid && j <= r) 
+    {
+        if(less(vs[i], vs[j]))
+            v[k++] = vs[i++];
+        else
+            v[k++] = vs[j++];
     }
+
+    while(i <= mid)
+        v[k++] = vs[i++];
+    
+    while(j <= r)
+        v[k++] = vs[j++];
+    
+    k = 0;
+    for(i = l; i <= r; i++)
+        vs[i] = v[k++];
+    
+    free(v);
 }
 
-int main() {
+void mergesort(Item *vs, int l, int r)
+{
+    if(l >= r)
+        return;
+    
+    int mid = l + (r - l)/2;
+    mergesort(vs, l, mid);
+    mergesort(vs, mid + 1, r);
+    merge(vs, l, mid, r);
+}
+
+int main()
+{
+    Item *values = malloc(sizeof(Item)*MAX);
     char tmp;
-    int i = -1;
-    int index = 0;
-    pair *vs = malloc(sizeof(vs) * 112345);
+    int index = 0, i = 0;
 
-    while(scanf("%c", &tmp) && tmp != '\n') {
-        if(i < 0) {
-            i = 0;
-            vs[i].amount = 1;
-            vs[i].letter = tmp;
-            vs[i].started = index;
+    scanf("%c", &tmp);
+    values[0].ch = tmp;
+    values[0].amount = 1;
+    values[0].start = 0;
+
+    while(scanf("%c", &tmp) && tmp != '\n')
+    {
+        ++index;
+
+        if(tmp == values[i].ch) 
+        {
+            values[i].amount++;
         }
-        else if(vs[i].letter == tmp) {
-            vs[i].amount++;
+
+        else
+        {
+            values[++i].amount = 1;
+            values[i].start = index;
+            values[i].ch = tmp;
         }
-        else {
-            vs[++i].letter = tmp;
-            vs[i].amount = 1;
-            vs[i].started = index;
-        }
-        index++;
     }
 
-    mergesort(vs, i + 1);
+    mergesort(values, 0, i);
 
-    for(int j = i; j >= 0; j--) {
-        printf("%d %c %d\n", vs[j].amount, vs[j].letter, vs[j].started);
-    }
-
-    return 0;
+    for(int j = i; j >= 0; j--)
+        printf("%d %c %d\n", values[j].amount, values[j].ch, values[j].start);
 }
