@@ -52,3 +52,7 @@ int hashuniversal(char *key, int M)
     return h;
 }
 ```
+
+### Já estudado
+- Endereçamento aberto
+- Double Hashing
