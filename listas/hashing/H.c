@@ -12,9 +12,6 @@ typedef struct Pair {
     char val;
 } Pair;
 
-#include <stdio.h>
-#include <stdlib.h>
-
 typedef Pair Item;
 void merge(Item *vs, int l, int mid, int r)
 {
