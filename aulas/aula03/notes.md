@@ -58,8 +58,8 @@ void flip_colors(node *root)
 // Acionado quando o filho a direita é vermelho
 node *rotate_left(node *root)
 {
-    node *new_root = r->right;
-    root->dir = new_root->left;
+    node *new_root = root->right;
+    root->right = new_root->left;
     new_root->left = root;
     new_root->red = root->red;
     root->red = true;
