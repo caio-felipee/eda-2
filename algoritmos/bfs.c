@@ -2,7 +2,11 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
+#define MAX ((int)1e6 + 10)
+#define Graph Linked_List
+
 typedef int Item;
+
 typedef struct Linked_List {
     Item value;
     struct Linked_List *next;
@@ -62,4 +66,44 @@ Queue *init_queue() {
     q->last = NULL;
 
     return q;
+}
+
+Graph *init_graph(int size) {
+    Graph *graph = malloc(sizeof(Graph)*size);
+    
+    for(int i = 0; i < size; i++) {
+        graph[i].value = 0;
+        graph[i].next = NULL;
+    }
+
+    return graph;
+}
+
+void push(Graph *graph, int a, int b) {
+    Linked_List *item = malloc(sizeof(Linked_List));
+    item->value = b;
+    item->next = graph[a].next;
+
+    graph[a].next = item;
+}
+
+int bfs(Graph *graph, bool *visited, int s) {
+    Queue *queue = init_queue();
+    insert(queue, s);
+    visited[s] = true;
+
+    while(!is_empty(queue)) {
+        Item f = front(queue);
+        pop(queue);
+
+        Graph tmp = graph[f];
+        while(tmp.next != NULL) {
+            tmp = *tmp.next;
+
+            if(!visited[tmp.value]) {
+                visited[tmp.value] = true;
+                insert(queue, tmp.value);
+            }
+        }
+    }
 }
