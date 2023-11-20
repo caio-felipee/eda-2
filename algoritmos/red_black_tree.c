@@ -68,13 +68,13 @@ node *insert_rb(node *n, Item value) {
     return n;
 }
 
-node *find_rb(node *n, int value) {
+node *find_rb(node *n, Item value) {
     if(n == NULL)
         return NULL;
 
-    if(value_rb(n->value) > value)
+    if(value_rb(n->value) > value_rb(value))
         find_rb(n->left, value);
-    else if(value_rb(n->value) < value)
+    else if(value_rb(n->value) < value_rb(value))
         find_rb(n->right, value);
     else
         return n;
